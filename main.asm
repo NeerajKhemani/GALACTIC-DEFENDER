@@ -58,9 +58,9 @@ instruction21 byte "* You lose a life if an enemy bullet hits you.         ",0
 instruction22 byte "* Game ends when all lives are lost.                   ",0
 instruction23 byte "                                                       ",0
 instruction24 byte "Scoring:                                               ",0
-instruction25 byte "    +10 points per enemy destroyed                     ",0
-instruction26 byte "                                                       ",0
-instruction27 byte "                                                       ",0
+instruction25 byte "  For level 1: +5 points per enemy destroyed           ",0
+instruction26 byte "  For level 2: +10 points per enemy destroyed          ",0
+instruction27 byte "  For level 3: +15 points per enemy destroyed          ",0
 instruction28 byte "                                                       ",0
 instruction29 byte "Press any key to return to MAIN MENU                   ",0
 
@@ -100,7 +100,7 @@ HorizontalBorder2 BYTE "________________________________________________________
     EnemyBullet ENDS
     enemyBullets EnemyBullet MAX_ENEMY_BULLETS dup(<0,0,0>)
     enemyFireCounter byte 0
-    enemyFireDelay byte 15
+    enemyFireDelay word 1000
     
 
     MAX_ENEMIES = 15
@@ -525,7 +525,7 @@ RightBorder:
 DrawBorder ENDP
 
 DrawPlayer PROC
-    mov eax, RED + BG_BLACK
+    mov eax, WHITE + BG_BLACK
     call SetTextColor
     mov dl, xPos
     mov dh, yPos
@@ -714,9 +714,9 @@ PlaceEnemies3 ENDP
 GetRandomFireDelayLevel3 PROC
     push edx
     push ecx
-    mov eax, 15         
+    mov eax, 35         
     call RandomRange
-    add eax, 1
+    add eax, 20
     pop ecx
     pop edx
     ret
@@ -855,7 +855,7 @@ RIGHT:
 HandleMovement ENDP
 
 MoveUp PROC
-    cmp yPos, 3
+    cmp yPos, 4
     je MU_End
     call UpdatePlayer
     dec yPos
@@ -975,11 +975,11 @@ CEU_Movement:
     jmp CEU_End
 
 CEU_2:
-    call UpdateEnemyFiringLevel2
+   call UpdateEnemyFiringLevel2
     jmp CEU_End
     
 CEU_3:
-    call UpdateEnemyFiringLevel3
+   call UpdateEnemyFiringLevel3
     
 CEU_End:
     ret
@@ -1220,7 +1220,7 @@ UEFL2_Loop:
     
     inc (Enemy PTR [esi]).fireCounter
     
-    mov bl, 3 ; fire delay
+    mov bl, 30 
     
     mov al, (Enemy PTR [esi]).fireCounter
     cmp al, bl
